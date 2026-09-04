@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4r4u 无规则服务器 | Minecraft 自由生存</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mc-green: #5c9e3b;
+            --mc-dark: #1a1a1a;
+            --mc-dirt: #8b5a2b;
+            --mc-stone: #7f7f7f;
+        }
+        
+        * {
+            image-rendering: pixelated;
+        }
+        
+        .pixel-font {
+            font-family: 'Press Start 2P', monospace;
+        }
+        
+        .mc-border {
+            border: 4px solid #000;
+            box-shadow: 
+                inset -4px -4px 0 0 #373737,
+                inset 4px 4px 0 0 #c6c6c6;
+        }
+        
+        .mc-btn {
+            background: #727272;
+            border: 4px solid #000;
+            box-shadow: 
+                inset -4px -4px 0 0 #373737,
+                inset 4px 4px 0 0 #ffffff;
+            transition: all 0.1s;
+        }
+        
+        .mc-btn:hover {
+            background: #868686;
+        }
+        
+        .mc-btn:active {
+            box-shadow: 
+                inset 4px 4px 0 0 #373737,
+                inset -4px -4px 0 0 #ffffff;
+            transform: translateY(2px);
+        }
+        
+        .dirt-bg {
+            background-color: #8b5a2b;
+            background-image: 
+                radial-gradient(circle at 20% 30%, #6b4423 2px, transparent 2px),
+                radial-gradient(circle at 80% 70%, #6b4423 3px, transparent 3px),
+                radial-gradient(circle at 50% 50%, #9a6b3c 2px, transparent 2px);
+            background-size: 32px 32px;
+        }
+        
+        .stone-bg {
+            background-color: #7f7f7f;
+            background-image: 
+                radial-gradient(circle at 30% 40%, #666 2px, transparent 2px),
+                radial-gradient(circle at 70% 60%, #999 2px, transparent 2px);
+            background-size: 32px 32px;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px rgba(92, 158, 59, 0.7);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float-anim {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .section-title::before,
+        .section-title::after {
+            content: "⬛";
+            margin: 0 12px;
+            color: var(--mc-green);
+        }
+    </style>
+</head>
+<body class="bg-zinc-900 text-white min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 bg-zinc-900/95 backdrop-blur border-b-4 border-black">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="pixel-font text-lg text-green-500 glow-text">4r4u</div>
+            <div class="hidden md:flex gap-8 text-sm">
+                <a href="#home" class="hover:text-green-400 transition-colors">首页</a>
+                <a href="#features" class="hover:text-green-400 transition-colors">服务器特色</a>
+                <a href="#join" class="hover:text-green-400 transition-colors">加入方式</a>
+                <a href="#contact" class="hover:text-green-400 transition-colors">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 首页英雄区 -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
+        <div class="absolute inset-0 dirt-bg opacity-10"></div>
+        
+        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+            <div class="float-anim mb-8">
+                <h1 class="pixel-font text-4xl md:text-6xl text-green-500 glow-text mb-4">
+                    4r4u
+                </h1>
+                <p class="pixel-font text-xl md:text-2xl text-gray-300 mb-2">
+                    无规则服务器
+                </p>
+                <p class="text-gray-400 text-lg mt-6">
+                    真正的自由世界 · 没有束缚 · 无限可能
+                </p>
+            </div>
+            
+            <div class="mc-border bg-zinc-800 p-8 mb-8 inline-block">
+                <p class="text-gray-400 mb-3 text-sm">服务器地址</p>
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <code id="server-ip" class="pixel-font text-xl md:text-2xl text-green-400 bg-black/50 px-4 py-2">
+                        4r4u.mkmc.cc
+                    </code>
+                    <button onclick="copyIP()" class="mc-btn px-6 py-3 pixel-font text-sm text-white">
+                        一键复制
+                    </button>
+                </div>
+                <p id="copy-tip" class="text-green-400 text-sm mt-3 h-5 opacity-0 transition-opacity">
+                    ✓ 已复制到剪贴板
+                </p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+                <div class="mc-border bg-zinc-800/80 px-6 py-3">
+                    <span class="text-gray-400 text-sm">游戏版本</span>
+                    <p class="pixel-font text-green-400 mt-1">Java 全版本</p>
+                </div>
+                <div class="mc-border bg-zinc-800/80 px-6 py-3">
+                    <span class="text-gray-400 text-sm">服务器类型</span>
+                    <p class="pixel-font text-green-400 mt-1">生存 · 无规则</p>
+                </div>
+                <div class="mc-border bg-zinc-800/80 px-6 py-3">
+                    <span class="text-gray-400 text-sm">在线状态</span>
+                    <p class="pixel-font text-green-500 mt-1">● 运行中</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务器特色 -->
+    <section id="features" class="py-20 relative">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title">
+                服务器特色
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
+                    <div class="text-4xl mb-4">⚔️</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">完全自由</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        没有繁琐的规则限制，PVP、掠夺、建造、破坏全部开放。你可以在这片土地上做任何想做的事，成为任何人。
+                    </p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">无领地保护</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        没有领地插件，一切靠实力说话。建造你的基地，守护你的财富，或者成为掠夺者，这都是你的自由。
+                    </p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
+                    <div class="text-4xl mb-4">🌍</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">纯净生存</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        原版生存体验，没有变态MOD和破坏平衡的道具。最纯粹的我的世界玩法，回归最初的感动。
+                    </p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
+                    <div class="text-4xl mb-4">👥</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">帮派林立</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        结识盟友组建帮派，争夺资源占地为王。合纵连横，乱世之中谁能称霸，全由你们书写。
+                    </p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">稳定流畅</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        高性能服务器主机，低延迟高帧率。24小时稳定运行，极少宕机维护，随时上线都能玩。
+                    </p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
+                    <div class="text-4xl mb-4">🆓</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">永久免费</h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        服务器完全免费开放，无VIP、无氪金、无付费道具。所有玩家一律平等，实力决定一切。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 加入方式 -->
+    <section id="join" class="py-20 stone-bg/10">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title">
+                如何加入
+            </h2>
+            
+            <div class="space-y-6">
+                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start">
+                    <div class="pixel-font text-2xl text-green-500 w-12 flex-shrink-0">01</div>
+                    <div>
+                        <h3 class="pixel-font text-lg text-white mb-2">打开 Minecraft</h3>
+                        <p class="text-gray-300">启动 Java 版 Minecraft，支持 1.8.x - 1.21.x 全版本进入游戏</p>
+                    </div>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start">
+                    <div class="pixel-font text-2xl text-green-500 w-12 flex-shrink-0">02</div>
+                    <div>
+                        <h3 class="pixel-font text-lg text-white mb-2">添加服务器</h3>
+                        <p class="text-gray-300">点击「多人游戏」→「添加服务器」，在服务器地址栏输入 <code class="bg-black/50 px-2 py-1 text-green-400">4r4u.mkmc.cc</code></p>
+                    </div>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start">
+                    <div class="pixel-font text-2xl text-green-500 w-12 flex-shrink-0">03</div>
+                    <div>
+                        <h3 class="pixel-font text-lg text-white mb-2">开始冒险</h3>
+                        <p class="text-gray-300">双击服务器连接进入游戏，开启你的无规则生存之旅。祝你好运，冒险者！</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <div class="mc-border bg-zinc-900 p-6 inline-block">
+                    <p class="text-gray-400 mb-2">服务器地址</p>
+                    <p class="pixel-font text-xl text-green-400">4r4u.mkmc.cc</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 注意事项 -->
+    <section class="py-20">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="mc-border bg-red-900/20 border-red-800 p-8">
+                <h3 class="pixel-font text-xl text-red-400 mb-4 flex items-center gap-3">
+                    ⚠️ 重要提示
+                </h3>
+                <ul class="space-y-3 text-gray-300">
+                    <li>• 本服务器为<strong class="text-red-400">无规则服务器</strong>，不保护任何玩家的财产与安全</li>
+                    <li>• 死亡掉落、基地被拆、物品被抢均属于正常游戏内容，管理员不会介入</li>
+                    <li>• 请自行做好备份与防护，不要将贵重物品放在容易被找到的地方</li>
+                    <li>• 禁止使用外挂、作弊客户端及各种破坏游戏公平性的工具</li>
+                    <li>• 进入服务器即表示你已了解并同意以上所有内容</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-20 stone-bg/10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 class="pixel-font text-2xl text-green-500 mb-16 section-title">
+                联系我们
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="mc-border bg-zinc-800 p-8">
+                    <div class="text-4xl mb-4">👤</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">腐竹</h3>
+                    <p class="text-white text-xl mb-2">orange_zhao</p>
+                    <p class="text-gray-400 text-sm">服务器运营 & 技术维护</p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-8">
+                    <div class="text-4xl mb-4">📧</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-3">联系邮箱</h3>
+                    <p class="text-white text-lg mb-2">3621786236@qq.com</p>
+                    <p class="text-gray-400 text-sm">商务合作 & 问题反馈</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-black py-8 border-t-4 border-zinc-800">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="pixel-font text-green-500 text-lg mb-2">4r4u 无规则服务器</p>
+            <p class="text-gray-500 text-sm mb-4">IP: 4r4u.mkmc.cc</p>
+            <p class="text-gray-600 text-xs">
+                © 2025 4r4u Server. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 复制IP功能
+        function copyIP() {
+            const ip = document.getElementById('server-ip').innerText.trim();
+            navigator.clipboard.writeText(ip).then(() => {
+                const tip = document.getElementById('copy-tip');
+                tip.style.opacity = '1';
+                setTimeout(() => {
+                    tip.style.opacity = '0';
+                }, 2000);
+            });
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 导航栏滚动效果
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+            } else {
+                nav.classList.remove('shadow-lg');
+            }
+        });
+    </script>
+</body>
+</html>
