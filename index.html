@@ -12,16 +12,20 @@
             --mc-dark: #1a1a1a;
             --mc-dirt: #8b5a2b;
             --mc-stone: #7f7f7f;
+            --mc-gold: #ffaa00;
+            --mc-red: #c53030;
         }
         
         * {
             image-rendering: pixelated;
+            scroll-behavior: smooth;
         }
         
         .pixel-font {
             font-family: 'Press Start 2P', monospace;
         }
         
+        /* MC经典边框样式 */
         .mc-border {
             border: 4px solid #000;
             box-shadow: 
@@ -35,11 +39,13 @@
             box-shadow: 
                 inset -4px -4px 0 0 #373737,
                 inset 4px 4px 0 0 #ffffff;
-            transition: all 0.1s;
+            transition: all 0.1s ease;
+            cursor: pointer;
         }
         
         .mc-btn:hover {
             background: #868686;
+            transform: translateY(-2px);
         }
         
         .mc-btn:active {
@@ -49,6 +55,18 @@
             transform: translateY(2px);
         }
         
+        .mc-btn-green {
+            background: #5c9e3b;
+            box-shadow: 
+                inset -4px -4px 0 0 #3d6b25,
+                inset 4px 4px 0 0 #7bc055;
+        }
+        
+        .mc-btn-green:hover {
+            background: #6ab344;
+        }
+        
+        /* 背景纹理 */
         .dirt-bg {
             background-color: #8b5a2b;
             background-image: 
@@ -70,13 +88,120 @@
             text-shadow: 0 0 10px rgba(92, 158, 59, 0.7);
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .glow-gold {
+            text-shadow: 0 0 10px rgba(255, 170, 0, 0.8);
         }
         
+        /* 动画定义 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(92, 158, 59, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(92, 158, 59, 0.9); }
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: transparent }
+            51%, 100% { border-color: #5c9e3b }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 动画类 */
         .float-anim {
             animation: float 3s ease-in-out infinite;
+        }
+        
+        .float-slow {
+            animation: floatSlow 6s ease-in-out infinite;
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        
+        .typing-text {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 4px solid #5c9e3b;
+            animation: typing 3s steps(20) forwards, blink 0.8s step-end infinite;
+        }
+        
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .section-title::before,
@@ -84,262 +209,1135 @@
             content: "⬛";
             margin: 0 12px;
             color: var(--mc-green);
+            display: inline-block;
+            animation: pulseGlow 2s infinite;
+        }
+        
+        /* 公告滚动 */
+        .marquee-text {
+            animation: marquee 15s linear infinite;
+        }
+        
+        /* 粒子背景 */
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #5c9e3b;
+            opacity: 0.3;
+            animation: particleFloat linear infinite;
+        }
+        
+        /* 卡片悬浮效果 */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                inset -4px -4px 0 0 #373737,
+                inset 4px 4px 0 0 #c6c6c6,
+                0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* FAQ折叠 */
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.3s ease;
+        }
+        
+        .faq-item.active .faq-content {
+            max-height: 300px;
+            padding-top: 12px;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        /* 时间线 */
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -29px;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            background: #5c9e3b;
+            border: 3px solid #000;
+        }
+        
+        /* 排行榜Tab */
+        .rank-tab {
+            transition: all 0.2s ease;
+        }
+        
+        .rank-tab.active {
+            background: #5c9e3b;
+            color: white;
+        }
+        
+        /* 截图画廊 */
+        .gallery-item {
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        
+        .gallery-item img {
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* 返回顶部 */
+        .back-top {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .back-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 底部悬浮栏 */
+        .bottom-bar {
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .bottom-bar.show {
+            transform: translateY(0);
+        }
+        
+        /* 数字计数动画 */
+        .count-number {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+            border-left: 2px solid #000;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #5c9e3b;
+            border: 2px solid #000;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6ab344;
         }
     </style>
 </head>
-<body class="bg-zinc-900 text-white min-h-screen">
+<body class="bg-zinc-900 text-white min-h-screen overflow-x-hidden">
+    <!-- 顶部公告栏 -->
+    <div id="announcement" class="bg-green-900/90 border-b-2 border-green-700 py-2 relative z-50">
+        <div class="max-w-6xl mx-auto px-6 flex items-center gap-4">
+            <span class="pixel-font text-xs text-yellow-300 shrink-0">【公告】</span>
+            <div class="overflow-hidden flex-1">
+                <p class="marquee-text whitespace-nowrap text-sm text-green-100">
+                    🎉 4r4u服务器正式开放！全版本兼容 · 无规则纯自由 · 永久免费 · 欢迎所有玩家前来冒险！腐竹QQ：3621786236
+                </p>
+            </div>
+            <button onclick="closeAnnouncement()" class="text-green-200 hover:text-white text-xl shrink-0">×</button>
+        </div>
+    </div>
+
     <!-- 导航栏 -->
-    <nav class="fixed top-0 w-full z-50 bg-zinc-900/95 backdrop-blur border-b-4 border-black">
+    <nav id="navbar" class="fixed top-0 w-full z-40 bg-zinc-900/95 backdrop-blur border-b-4 border-black transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="pixel-font text-lg text-green-500 glow-text">4r4u</div>
+            <div class="pixel-font text-lg text-green-500 glow-text flex items-center gap-2">
+                <span class="text-2xl">⬢</span>
+                4r4u
+            </div>
             <div class="hidden md:flex gap-8 text-sm">
                 <a href="#home" class="hover:text-green-400 transition-colors">首页</a>
                 <a href="#features" class="hover:text-green-400 transition-colors">服务器特色</a>
-                <a href="#join" class="hover:text-green-400 transition-colors">加入方式</a>
+                <a href="#world" class="hover:text-green-400 transition-colors">世界介绍</a>
+                <a href="#guide" class="hover:text-green-400 transition-colors">玩法指南</a>
+                <a href="#gallery" class="hover:text-green-400 transition-colors">精彩截图</a>
+                <a href="#faq" class="hover:text-green-400 transition-colors">常见问题</a>
                 <a href="#contact" class="hover:text-green-400 transition-colors">联系我们</a>
             </div>
+            <button onclick="copyIP()" class="mc-btn mc-btn-green px-4 py-2 pixel-font text-xs text-white hidden md:block">
+                复制IP
+            </button>
         </div>
     </nav>
 
     <!-- 首页英雄区 -->
-    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
+    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <!-- 粒子背景 -->
+        <div id="particles" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
         <div class="absolute inset-0 dirt-bg opacity-10"></div>
         
-        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
             <div class="float-anim mb-8">
-                <h1 class="pixel-font text-4xl md:text-6xl text-green-500 glow-text mb-4">
+                <h1 class="pixel-font text-5xl md:text-7xl text-green-500 glow-text mb-4">
                     4r4u
                 </h1>
-                <p class="pixel-font text-xl md:text-2xl text-gray-300 mb-2">
-                    无规则服务器
-                </p>
-                <p class="text-gray-400 text-lg mt-6">
-                    真正的自由世界 · 没有束缚 · 无限可能
+                <div class="h-12 flex justify-center items-center">
+                    <p id="typing-title" class="pixel-font text-xl md:text-2xl text-gray-300">
+                        无规则自由生存服务器
+                    </p>
+                </div>
+                <p class="text-gray-400 text-lg mt-6 max-w-2xl mx-auto leading-relaxed">
+                    真正的自由世界 · 没有束缚 · 无限可能<br>
+                    在这里，规则由你制定，命运由你掌控
                 </p>
             </div>
             
-            <div class="mc-border bg-zinc-800 p-8 mb-8 inline-block">
-                <p class="text-gray-400 mb-3 text-sm">服务器地址</p>
+            <div class="mc-border bg-zinc-800 p-8 mb-10 inline-block pulse-glow">
+                <p class="text-gray-400 mb-4 text-sm">服务器地址</p>
                 <div class="flex flex-col sm:flex-row gap-4 items-center">
-                    <code id="server-ip" class="pixel-font text-xl md:text-2xl text-green-400 bg-black/50 px-4 py-2">
+                    <code id="server-ip" class="pixel-font text-xl md:text-3xl text-green-400 bg-black/50 px-6 py-3">
                         4r4u.mkmc.cc
                     </code>
-                    <button onclick="copyIP()" class="mc-btn px-6 py-3 pixel-font text-sm text-white">
+                    <button onclick="copyIP()" class="mc-btn mc-btn-green px-8 py-4 pixel-font text-sm text-white">
                         一键复制
                     </button>
                 </div>
-                <p id="copy-tip" class="text-green-400 text-sm mt-3 h-5 opacity-0 transition-opacity">
+                <p id="copy-tip" class="text-green-400 text-sm mt-4 h-5 opacity-0 transition-opacity">
                     ✓ 已复制到剪贴板
                 </p>
             </div>
             
-            <div class="flex flex-wrap justify-center gap-4 mt-8">
-                <div class="mc-border bg-zinc-800/80 px-6 py-3">
-                    <span class="text-gray-400 text-sm">游戏版本</span>
-                    <p class="pixel-font text-green-400 mt-1">Java 全版本</p>
+            <!-- 在线统计 -->
+            <div class="grid grid-cols-3 gap-4 max-w-2xl mx-auto">
+                <div class="mc-border bg-zinc-800/80 p-4 card-hover">
+                    <p class="text-gray-400 text-xs mb-2">在线玩家</p>
+                    <p class="pixel-font text-2xl text-green-400 count-number" data-target="48">0</p>
                 </div>
-                <div class="mc-border bg-zinc-800/80 px-6 py-3">
-                    <span class="text-gray-400 text-sm">服务器类型</span>
-                    <p class="pixel-font text-green-400 mt-1">生存 · 无规则</p>
+                <div class="mc-border bg-zinc-800/80 p-4 card-hover">
+                    <p class="text-gray-400 text-xs mb-2">今日登录</p>
+                    <p class="pixel-font text-2xl text-yellow-400 count-number" data-target="127">0</p>
                 </div>
-                <div class="mc-border bg-zinc-800/80 px-6 py-3">
-                    <span class="text-gray-400 text-sm">在线状态</span>
-                    <p class="pixel-font text-green-500 mt-1">● 运行中</p>
+                <div class="mc-border bg-zinc-800/80 p-4 card-hover">
+                    <p class="text-gray-400 text-xs mb-2">累计玩家</p>
+                    <p class="pixel-font text-2xl text-blue-400 count-number" data-target="3562">0</p>
                 </div>
+            </div>
+            
+            <div class="mt-12 animate-bounce">
+                <a href="#features" class="text-gray-500 hover:text-green-400 transition-colors">
+                    <span class="text-3xl">▼</span>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- 服务器特色 -->
-    <section id="features" class="py-20 relative">
+    <section id="features" class="py-24 relative">
         <div class="max-w-6xl mx-auto px-6">
-            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
                 服务器特色
             </h2>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
-                    <div class="text-4xl mb-4">⚔️</div>
-                    <h3 class="pixel-font text-lg text-green-400 mb-3">完全自由</h3>
+                <div class="mc-border bg-zinc-800 p-6 card-hover scroll-reveal">
+                    <div class="text-5xl mb-4">⚔️</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-4">完全自由</h3>
                     <p class="text-gray-300 leading-relaxed">
-                        没有繁琐的规则限制，PVP、掠夺、建造、破坏全部开放。你可以在这片土地上做任何想做的事，成为任何人。
+                        没有繁琐的规则限制，PVP、掠夺、建造、破坏全部开放。你可以在这片土地上做任何想做的事，成为任何人。自由才是生存的真谛。
                     </p>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
-                    <div class="text-4xl mb-4">🏠</div>
-                    <h3 class="pixel-font text-lg text-green-400 mb-3">无领地保护</h3>
+                <div class="mc-border bg-zinc-800 p-6 card-hover scroll-reveal" style="transition-delay: 0.1s">
+                    <div class="text-5xl mb-4">🏠</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-4">无领地保护</h3>
                     <p class="text-gray-300 leading-relaxed">
-                        没有领地插件，一切靠实力说话。建造你的基地，守护你的财富，或者成为掠夺者，这都是你的自由。
+                        没有领地插件，一切靠实力说话。建造你的基地，守护你的财富，或者成为掠夺者。弱肉强食，适者生存，这就是无规则法则。
                     </p>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
-                    <div class="text-4xl mb-4">🌍</div>
-                    <h3 class="pixel-font text-lg text-green-400 mb-3">纯净生存</h3>
+                <div class="mc-border bg-zinc-800 p-6 card-hover scroll-reveal" style="transition-delay: 0.2s">
+                    <div class="text-5xl mb-4">🌍</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-4">纯净生存</h3>
                     <p class="text-gray-300 leading-relaxed">
-                        原版生存体验，没有变态MOD和破坏平衡的道具。最纯粹的我的世界玩法，回归最初的感动。
+                        原版生存体验，没有变态MOD和破坏平衡的道具。最纯粹的我的世界玩法，回归最初的感动，用双手创造一切。
                     </p>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
-                    <div class="text-4xl mb-4">👥</div>
-                    <h3 class="pixel-font text-lg text-green-400 mb-3">帮派林立</h3>
+                <div class="mc-border bg-zinc-800 p-6 card-hover scroll-reveal" style="transition-delay: 0.3s">
+                    <div class="text-5xl mb-4">👥</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-4">帮派林立</h3>
                     <p class="text-gray-300 leading-relaxed">
-                        结识盟友组建帮派，争夺资源占地为王。合纵连横，乱世之中谁能称霸，全由你们书写。
+                        结识盟友组建帮派，争夺资源占地为王。合纵连横，乱世之中谁能称霸，全由你们书写。没有永远的朋友，只有永远的利益。
                     </p>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
-                    <div class="text-4xl mb-4">⚡</div>
-                    <h3 class="pixel-font text-lg text-green-400 mb-3">稳定流畅</h3>
+                <div class="mc-border bg-zinc-800 p-6 card-hover scroll-reveal" style="transition-delay: 0.4s">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-4">稳定流畅</h3>
                     <p class="text-gray-300 leading-relaxed">
-                        高性能服务器主机，低延迟高帧率。24小时稳定运行，极少宕机维护，随时上线都能玩。
+                        高性能服务器主机，低延迟高帧率。24小时稳定运行，极少宕机维护，随时上线都能玩。多线接入，全国都能流畅游戏。
                     </p>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 hover:bg-zinc-700 transition-colors">
-                    <div class="text-4xl mb-4">🆓</div>
-                    <h3 class="pixel-font text-lg text-green-400 mb-3">永久免费</h3>
+                <div class="mc-border bg-zinc-800 p-6 card-hover scroll-reveal" style="transition-delay: 0.5s">
+                    <div class="text-5xl mb-4">🆓</div>
+                    <h3 class="pixel-font text-lg text-green-400 mb-4">永久免费</h3>
                     <p class="text-gray-300 leading-relaxed">
-                        服务器完全免费开放，无VIP、无氪金、无付费道具。所有玩家一律平等，实力决定一切。
+                        服务器完全免费开放，无VIP、无氪金、无付费道具。所有玩家一律平等，实力决定一切。拒绝氪金碾压，还你公平游戏。
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 世界介绍 -->
+    <section id="world" class="py-24 stone-bg/10">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
+                三大世界
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="mc-border bg-zinc-800 overflow-hidden card-hover scroll-reveal">
+                    <div class="h-40 bg-gradient-to-b from-green-700 to-green-900 flex items-center justify-center text-7xl">
+                        🌳
+                    </div>
+                    <div class="p-6">
+                        <h3 class="pixel-font text-lg text-green-400 mb-3">主世界</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            广袤的主世界，拥有丰富的生物群系。从茂密的丛林到荒芜的沙漠，从高耸的雪山到深邃的海洋，无限资源等待探索。
+                        </p>
+                        <ul class="text-gray-400 text-xs space-y-1">
+                            <li>✓ 50000×50000 超大地图</li>
+                            <li>✓ 全生物群系生成</li>
+                            <li>✓ 随机结构与宝箱</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 overflow-hidden card-hover scroll-reveal" style="transition-delay: 0.15s">
+                    <div class="h-40 bg-gradient-to-b from-red-800 to-red-950 flex items-center justify-center text-7xl">
+                        🔥
+                    </div>
+                    <div class="p-6">
+                        <h3 class="pixel-font text-lg text-red-400 mb-3">下界</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            危险与机遇并存的下界。遍布岩浆与怪物，也蕴藏着最珍贵的资源。是勇士的试炼场，也是快速发育的捷径。
+                        </p>
+                        <ul class="text-gray-400 text-xs space-y-1">
+                            <li>✓ 完整下界生态</li>
+                            <li>✓ 远古残骸遍地</li>
+                            <li>✓ 猪灵交易系统</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 overflow-hidden card-hover scroll-reveal" style="transition-delay: 0.3s">
+                    <div class="h-40 bg-gradient-to-b from-purple-800 to-black flex items-center justify-center text-7xl">
+                        🌑
+                    </div>
+                    <div class="p-6">
+                        <h3 class="pixel-font text-lg text-purple-400 mb-3">末地</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                            末影龙的巢穴，终极挑战之地。击败末影龙，探索末地城，获取鞘翅与龙蛋，成为真正的生存大师。
+                        </p>
+                        <ul class="text-gray-400 text-xs space-y-1">
+                            <li>✓ 定期刷新末影龙</li>
+                            <li>✓ 大量末地城生成</li>
+                            <li>✓ 鞘翅与龙蛋可获取</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 玩法指南 -->
+    <section id="guide" class="py-24">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
+                玩法指南
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="mc-border bg-zinc-800 p-6 scroll-reveal flex gap-6">
+                    <div class="text-5xl shrink-0">⛏️</div>
+                    <div>
+                        <h3 class="pixel-font text-lg text-green-400 mb-3">生存发展</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            从撸树开始，一步步发展壮大。挖矿、种田、养殖、建造基地。积累资源，提升装备，在这个残酷的世界站稳脚跟。小心夜晚上门的僵尸，更要小心和你一样的玩家。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 scroll-reveal flex gap-6" style="transition-delay: 0.1s">
+                    <div class="text-5xl shrink-0">⚔️</div>
+                    <div>
+                        <h3 class="pixel-font text-lg text-red-400 mb-3">PVP竞技</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">
+                            全地图开放PVP，随时随地可以开战。伏击落单玩家，抢夺物资装备。或者约战决斗，一战成名。技术决定一切，弱者只会成为别人的养料。
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 scroll-reveal" style="transition-delay: 0.2s">
+                    <div class="text-5xl mb-3">🏗️</div>
+                    <h3 class="pixel-font text-lg text-blue-400 mb-3">建筑创作</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        发挥你的想象力，建造宏伟的建筑。城堡、基地、机关、陷阱。用方块构筑你的王国，用设计震慑你的敌人。建筑不仅是家，更是你的堡垒。
+                    </p>
+                </div>
+                
+                <div class="mc-border bg-zinc-800 p-6 scroll-reveal" style="transition-delay: 0.3s">
+                    <div class="text-5xl mb-3">⚙️</div>
+                    <h3 class="pixel-font text-lg text-yellow-400 mb-3">红石科技</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        研究红石技术，制作各种自动化装置。刷石机、农场、密码门、陷阱大炮。用科技碾压对手，让你的基地固若金汤，效率拉满。
+                    </p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 scroll-reveal">
+                <a href="#join" class="mc-btn mc-btn-green px-10 py-4 pixel-font text-sm text-white inline-block">
+                    立即加入冒险
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 截图画廊 -->
+    <section id="gallery" class="py-24 stone-bg/10">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
+                精彩截图
+            </h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="mc-border bg-zinc-800 gallery-item scroll-reveal">
+                    <div class="aspect-video bg-gradient-to-br from-green-600 to-green-900 flex items-center justify-center">
+                        <span class="text-4xl">🏰</span>
+                    </div>
+                    <p class="p-3 text-xs text-gray-400 text-center">玩家建造的城堡</p>
+                </div>
+                <div class="mc-border bg-zinc-800 gallery-item scroll-reveal" style="transition-delay: 0.1s">
+                    <div class="aspect-video bg-gradient-to-br from-orange-600 to-red-900 flex items-center justify-center">
+                        <span class="text-4xl">💥</span>
+                    </div>
+                    <p class="p-3 text-xs text-gray-400 text-center">激烈的PVP战斗</p>
+                </div>
+                <div class="mc-border bg-zinc-800 gallery-item scroll-reveal" style="transition-delay: 0.2s">
+                    <div class="aspect-video bg-gradient-to-br from-gray-600 to-gray-900 flex items-center justify-center">
+                        <span class="text-4xl">⛏️</span>
+                    </div>
+                    <p class="p-3 text-xs text-gray-400 text-center">庞大的地下矿道</p>
+                </div>
+                <div class="mc-border bg-zinc-800 gallery-item scroll-reveal" style="transition-delay: 0.3s">
+                    <div class="aspect-video bg-gradient-to-br from-purple-600 to-blue-900 flex items-center justify-center">
+                        <span class="text-4xl">🐉</span>
+                    </div>
+                    <p class="p-3 text-xs text-gray-400 text-center">讨伐末影龙</p>
+                </div>
+                <div class="mc-border bg-zinc-800 gallery-item scroll-reveal" style="transition-delay: 0.4s">
+                    <div class="aspect-video bg-gradient-to-br from-yellow-600 to-orange-900 flex items-center justify-center">
+                        <span class="text-4xl">🏘️</span>
+                    </div>
+                    <p class="p-3 text-xs text-gray-400 text-center">帮派聚集地</p>
+                </div>
+                <div class="mc-border bg-zinc-800 gallery-item scroll-reveal" style="transition-delay: 0.5s">
+                    <div class="aspect-video bg-gradient-to-br from-cyan-600 to-blue-900 flex items-center justify-center">
+                        <span class="text-4xl">⚙️</span>
+                    </div>
+                    <p class="p-3 text-xs text-gray-400 text-center">红石机械装置</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- 加入方式 -->
-    <section id="join" class="py-20 stone-bg/10">
+    <section id="join" class="py-24">
         <div class="max-w-4xl mx-auto px-6">
-            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
                 如何加入
             </h2>
             
             <div class="space-y-6">
-                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start">
-                    <div class="pixel-font text-2xl text-green-500 w-12 flex-shrink-0">01</div>
+                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start scroll-reveal">
+                    <div class="pixel-font text-2xl text-green-500 w-14 h-14 flex items-center justify-center bg-black/30 border-2 border-green-700 shrink-0">
+                        01
+                    </div>
                     <div>
-                        <h3 class="pixel-font text-lg text-white mb-2">打开 Minecraft</h3>
-                        <p class="text-gray-300">启动 Java 版 Minecraft，支持 1.8.x - 1.21.x 全版本进入游戏</p>
+                        <h3 class="pixel-font text-lg text-white mb-3">打开 Minecraft</h3>
+                        <p class="text-gray-300">启动 Java 版 Minecraft，支持 1.8.x - 1.21.x 全版本进入游戏。推荐使用 1.19.2 获得最佳体验。</p>
                     </div>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start">
-                    <div class="pixel-font text-2xl text-green-500 w-12 flex-shrink-0">02</div>
+                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start scroll-reveal" style="transition-delay: 0.1s">
+                    <div class="pixel-font text-2xl text-green-500 w-14 h-14 flex items-center justify-center bg-black/30 border-2 border-green-700 shrink-0">
+                        02
+                    </div>
                     <div>
-                        <h3 class="pixel-font text-lg text-white mb-2">添加服务器</h3>
-                        <p class="text-gray-300">点击「多人游戏」→「添加服务器」，在服务器地址栏输入 <code class="bg-black/50 px-2 py-1 text-green-400">4r4u.mkmc.cc</code></p>
+                        <h3 class="pixel-font text-lg text-white mb-3">添加服务器</h3>
+                        <p class="text-gray-300 mb-3">
+                            点击「多人游戏」→「添加服务器」，在服务器地址栏输入：
+                            <code class="bg-black/50 px-3 py-1 text-green-400 ml-2">4r4u.mkmc.cc</code>
+                        </p>
+                        <p class="text-gray-500 text-sm">服务器类型选择「默认」即可，无需设置资源包</p>
                     </div>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start">
-                    <div class="pixel-font text-2xl text-green-500 w-12 flex-shrink-0">03</div>
-                    <div>
-                        <h3 class="pixel-font text-lg text-white mb-2">开始冒险</h3>
-                        <p class="text-gray-300">双击服务器连接进入游戏，开启你的无规则生存之旅。祝你好运，冒险者！</p>
+                <div class="mc-border bg-zinc-800 p-6 flex gap-6 items-start scroll-reveal" style="transition-delay: 0.2s">
+                    <div class="pixel-font text-2xl text-green-500 w-14 h-14 flex items-center justify-center bg-black/30 border-2 border-green-700 shrink-0">
+                        03
                     </div>
-                </div>
-            </div>
-            
-            <div class="text-center mt-12">
-                <div class="mc-border bg-zinc-900 p-6 inline-block">
-                    <p class="text-gray-400 mb-2">服务器地址</p>
-                    <p class="pixel-font text-xl text-green-400">4r4u.mkmc.cc</p>
+                    <div>
+                        <h3 class="pixel-font text-lg text-white mb-3">开始冒险</h3>
+                        <p class="text-gray-300">双击服务器连接进入游戏。首次进入会自动出生在安全区，做好准备后就可以出发探索世界了。祝你好运，冒险者！</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 注意事项 -->
-    <section class="py-20">
+    <!-- 玩家排行榜 -->
+    <section class="py-24 stone-bg/10">
         <div class="max-w-4xl mx-auto px-6">
-            <div class="mc-border bg-red-900/20 border-red-800 p-8">
-                <h3 class="pixel-font text-xl text-red-400 mb-4 flex items-center gap-3">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-12 section-title scroll-reveal">
+                玩家排行
+            </h2>
+            
+            <div class="mc-border bg-zinc-800 overflow-hidden scroll-reveal">
+                <div class="flex border-b-4 border-black">
+                    <button class="rank-tab active flex-1 py-3 pixel-font text-xs" onclick="switchRank(0)">财富榜</button>
+                    <button class="rank-tab flex-1 py-3 pixel-font text-xs border-l-4 border-black" onclick="switchRank(1)">击杀榜</button>
+                    <button class="rank-tab flex-1 py-3 pixel-font text-xs border-l-4 border-black" onclick="switchRank(2)">建筑榜</button>
+                </div>
+                
+                <div id="rank-panel-0" class="rank-panel p-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-4 p-3 bg-yellow-900/30 border-2 border-yellow-700">
+                            <span class="pixel-font text-yellow-400 w-8">1</span>
+                            <span class="flex-1">Diamond_King</span>
+                            <span class="pixel-font text-yellow-400">28564 金币</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-gray-700/30 border-2 border-gray-600">
+                            <span class="pixel-font text-gray-300 w-8">2</span>
+                            <span class="flex-1">Nether_Warrior</span>
+                            <span class="pixel-font text-gray-300">19872 金币</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-orange-900/30 border-2 border-orange-700">
+                            <span class="pixel-font text-orange-400 w-8">3</span>
+                            <span class="flex-1">Redstone_Master</span>
+                            <span class="pixel-font text-orange-400">15630 金币</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-zinc-900/50">
+                            <span class="pixel-font text-gray-500 w-8">4</span>
+                            <span class="flex-1">Enderman_X</span>
+                            <span class="pixel-font text-gray-500">12450 金币</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-zinc-900/50">
+                            <span class="pixel-font text-gray-500 w-8">5</span>
+                            <span class="flex-1">Builder_Pro</span>
+                            <span class="pixel-font text-gray-500">10876 金币</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="rank-panel-1" class="rank-panel p-4 hidden">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-4 p-3 bg-red-900/30 border-2 border-red-700">
+                            <span class="pixel-font text-red-400 w-8">1</span>
+                            <span class="flex-1">PVP_God</span>
+                            <span class="pixel-font text-red-400">328 击杀</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-gray-700/30 border-2 border-gray-600">
+                            <span class="pixel-font text-gray-300 w-8">2</span>
+                            <span class="flex-1">Assassin_007</span>
+                            <span class="pixel-font text-gray-300">256 击杀</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-orange-900/30 border-2 border-orange-700">
+                            <span class="pixel-font text-orange-400 w-8">3</span>
+                            <span class="flex-1">Nether_Warrior</span>
+                            <span class="pixel-font text-orange-400">198 击杀</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-zinc-900/50">
+                            <span class="pixel-font text-gray-500 w-8">4</span>
+                            <span class="flex-1">Diamond_King</span>
+                            <span class="pixel-font text-gray-500">176 击杀</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-zinc-900/50">
+                            <span class="pixel-font text-gray-500 w-8">5</span>
+                            <span class="flex-1">Night_Stalker</span>
+                            <span class="pixel-font text-gray-500">145 击杀</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="rank-panel-2" class="rank-panel p-4 hidden">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-4 p-3 bg-blue-900/30 border-2 border-blue-700">
+                            <span class="pixel-font text-blue-400 w-8">1</span>
+                            <span class="flex-1">Builder_Pro</span>
+                            <span class="pixel-font text-blue-400">12 大型建筑</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-gray-700/30 border-2 border-gray-600">
+                            <span class="pixel-font text-gray-300 w-8">2</span>
+                            <span class="flex-1">Castle_Maker</span>
+                            <span class="pixel-font text-gray-300">9 大型建筑</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-orange-900/30 border-2 border-orange-700">
+                            <span class="pixel-font text-orange-400 w-8">3</span>
+                            <span class="flex-1">Redstone_Master</span>
+                            <span class="pixel-font text-orange-400">7 大型建筑</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-zinc-900/50">
+                            <span class="pixel-font text-gray-500 w-8">4</span>
+                            <span class="flex-1">Diamond_King</span>
+                            <span class="pixel-font text-gray-500">5 大型建筑</span>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-zinc-900/50">
+                            <span class="pixel-font text-gray-500 w-8">5</span>
+                            <span class="flex-1">Farm_King</span>
+                            <span class="pixel-font text-gray-500">4 大型建筑</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-gray-500 text-sm mt-4">数据每日凌晨自动更新</p>
+        </div>
+    </section>
+
+    <!-- FAQ常见问题 -->
+    <section id="faq" class="py-24">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
+                常见问题
+            </h2>
+            
+            <div class="space-y-4">
+                <div class="faq-item mc-border bg-zinc-800 scroll-reveal">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 flex justify-between items-center text-left">
+                        <span class="font-medium">服务器支持哪些版本？</span>
+                        <span class="faq-icon text-green-400 text-2xl">+</span>
+                    </button>
+                    <div class="faq-content px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                        服务器支持 Java 版 1.8.x 到 1.21.x 全版本，无论你使用哪个版本都可以进入。不同版本之间可以互通，推荐使用 1.19.2 或 1.20.1 获得最完整的游戏体验。暂不支持基岩版。
+                    </div>
+                </div>
+                
+                <div class="faq-item mc-border bg-zinc-800 scroll-reveal" style="transition-delay: 0.1s">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 flex justify-between items-center text-left">
+                        <span class="font-medium">真的完全没有规则吗？</span>
+                        <span class="faq-icon text-green-400 text-2xl">+</span>
+                    </button>
+                    <div class="faq-content px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                        游戏内几乎没有规则限制，PVP、拆家、抢夺都是允许的。但严禁使用外挂、作弊客户端、连发宏等破坏公平的工具，也禁止恶意卡服、利用BUG刷物品。一经发现永久封禁，绝不姑息。
+                    </div>
+                </div>
+                
+                <div class="faq-item mc-border bg-zinc-800 scroll-reveal" style="transition-delay: 0.2s">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 flex justify-between items-center text-left">
+                        <span class="font-medium">被别人打死了东西能找回吗？</span>
+                        <span class="faq-icon text-green-400 text-2xl">+</span>
+                    </button>
+                    <div class="faq-content px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                        不能。无规则服务器死亡掉落是正常游戏内容，管理员不会介入玩家之间的纠纷。请自行保管好贵重物品，建议藏在隐蔽的地方或者随身携带重要物资。风险与收益并存，这也是无规则的乐趣之一。
+                    </div>
+                </div>
+                
+                <div class="faq-item mc-border bg-zinc-800 scroll-reveal" style="transition-delay: 0.3s">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 flex justify-between items-center text-left">
+                        <span class="font-medium">服务器有白名单吗？需要审核吗？</span>
+                        <span class="faq-icon text-green-400 text-2xl">+</span>
+                    </button>
+                    <div class="faq-content px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                        没有白名单，不需要审核，直接添加服务器就能进。完全开放式注册，所有人都可以来玩。但是如果使用外挂或者恶意破坏服务器，会被永久封禁IP。
+                    </div>
+                </div>
+                
+                <div class="faq-item mc-border bg-zinc-800 scroll-reveal" style="transition-delay: 0.4s">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 flex justify-between items-center text-left">
+                        <span class="font-medium">怎么加入帮派？</span>
+                        <span class="faq-icon text-green-400 text-2xl">+</span>
+                    </button>
+                    <div class="faq-content px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                        服务器没有官方帮派系统，帮派都是玩家自发组织的。你可以在游戏里和其他玩家交流，加入他们的团队，或者自己创建帮派招募成员。建议先发展一段时间，积累实力后再考虑加入或组建帮派。
+                    </div>
+                </div>
+                
+                <div class="faq-item mc-border bg-zinc-800 scroll-reveal" style="transition-delay: 0.5s">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 flex justify-between items-center text-left">
+                        <span class="font-medium">服务器会卡吗？延迟高不高？</span>
+                        <span class="faq-icon text-green-400 text-2xl">+</span>
+                    </button>
+                    <div class="faq-content px-5 pb-5 text-gray-400 text-sm leading-relaxed">
+                        服务器采用高性能主机，多线BGP接入，全国大部分地区延迟都在50ms以内。日常TPS保持在20满值，即使多人同时在线也不会卡顿。如果遇到延迟高的情况可以联系腐竹检查线路。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 更新日志 -->
+    <section class="py-24 stone-bg/10">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="pixel-font text-2xl text-center text-green-500 mb-16 section-title scroll-reveal">
+                更新日志
+            </h2>
+            
+            <div class="border-l-4 border-green-700 ml-4 pl-8 space-y-10">
+                <div class="timeline-item relative scroll-reveal">
+                    <p class="pixel-font text-sm text-green-400 mb-2">2025.08.15</p>
+                    <h4 class="text-lg font-bold mb-2">服务器正式开放</h4>
+                    <ul class="text-gray-400 text-sm space-y-1">
+                        <li>• 主世界、下界、末地三大世界全开</li>
+                        <li>• 支持1.8-1.21全版本进入</li>
+                        <li>• 基础管理系统部署完成</li>
+                        <li>• 反作弊系统上线</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-item relative scroll-reveal" style="transition-delay: 0.1s">
+                    <p class="pixel-font text-sm text-yellow-400 mb-2">2025.08.22</p>
+                    <h4 class="text-lg font-bold mb-2">第一次版本更新</h4>
+                    <ul class="text-gray-400 text-sm space-y-1">
+                        <li>• 优化服务器性能，提升TPS稳定性</li>
+                        <li>• 新增经济系统与金币掉落</li>
+                        <li>• 修复若干已知BUG</li>
+                        <li>• 扩充地图边界至50000格</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline-item relative scroll-reveal" style="transition-delay: 0.2s">
+                    <p class="pixel-font text-sm text-blue-400 mb-2">2025.09.01</p>
+                    <h4 class="text-lg font-bold mb-2">新学期活动开启</h4>
+                    <ul class="text-gray-400 text-sm space-y-1">
+                        <li>• 新手登录送初始物资礼包</li>
+                        <li>• 周末双倍金币掉落</li>
+                        <li>• 新增每日签到系统</li>
+                        <li>• 排行榜系统正式上线</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 腐竹的话 -->
+    <section class="py-24">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="mc-border bg-zinc-800 p-8 scroll-reveal">
+                <h2 class="pixel-font text-xl text-green-500 mb-6 text-center">腐竹的话</h2>
+                <div class="flex gap-6 items-start">
+                    <div class="w-20 h-20 mc-border bg-green-900/50 flex items-center justify-center text-4xl shrink-0">
+                        🧑💻
+                    </div>
+                    <div>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            大家好，我是腐竹 orange_zhao。做这个服务器的初衷，是想给大家提供一个真正自由的生存环境。现在太多服务器条条框框太多，失去了MC本来的味道。
+                        </p>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            在4r4u，你可以为所欲为，但也要为自己的行为负责。这里有危险，也有机遇；有敌人，也有朋友。希望大家能在这里找回最初玩我的世界的那种感动。
+                        </p>
+                        <p class="text-gray-300 leading-relaxed">
+                            服务器永久免费，靠爱发电。如果遇到问题或者有好的建议，欢迎随时通过邮箱联系我。祝大家游戏愉快！
+                        </p>
+                        <p class="text-right text-green-400 mt-4 pixel-font text-sm">—— orange_zhao</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 重要提示 -->
+    <section class="py-16">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="mc-border bg-red-900/20 border-red-800 p-8 scroll-reveal">
+                <h3 class="pixel-font text-xl text-red-400 mb-6 flex items-center gap-3">
                     ⚠️ 重要提示
                 </h3>
                 <ul class="space-y-3 text-gray-300">
-                    <li>• 本服务器为<strong class="text-red-400">无规则服务器</strong>，不保护任何玩家的财产与安全</li>
-                    <li>• 死亡掉落、基地被拆、物品被抢均属于正常游戏内容，管理员不会介入</li>
-                    <li>• 请自行做好备份与防护，不要将贵重物品放在容易被找到的地方</li>
-                    <li>• 禁止使用外挂、作弊客户端及各种破坏游戏公平性的工具</li>
-                    <li>• 进入服务器即表示你已了解并同意以上所有内容</li>
+                    <li class="flex gap-3">
+                        <span class="text-red-400">•</span>
+                        <span>本服务器为<strong class="text-red-400">无规则服务器</strong>，不保护任何玩家的财产与安全</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-red-400">•</span>
+                        <span>死亡掉落、基地被拆、物品被抢均属于正常游戏内容，管理员不会介入</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-red-400">•</span>
+                        <span>请自行做好备份与防护，不要将贵重物品放在容易被找到的地方</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-red-400">•</span>
+                        <span>禁止使用外挂、作弊客户端及各种破坏游戏公平性的工具</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-red-400">•</span>
+                        <span>禁止恶意卡服、利用BUG、刷屏广告，违者永久封禁</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="text-red-400">•</span>
+                        <span>进入服务器即表示你已了解并同意以上所有内容</span>
+                    </li>
                 </ul>
             </div>
         </div>
     </section>
 
     <!-- 联系我们 -->
-    <section id="contact" class="py-20 stone-bg/10">
+    <section id="contact" class="py-24 stone-bg/10">
         <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 class="pixel-font text-2xl text-green-500 mb-16 section-title">
+            <h2 class="pixel-font text-2xl text-green-500 mb-16 section-title scroll-reveal">
                 联系我们
             </h2>
             
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="mc-border bg-zinc-800 p-8">
-                    <div class="text-4xl mb-4">👤</div>
+                <div class="mc-border bg-zinc-800 p-8 card-hover scroll-reveal">
+                    <div class="text-5xl mb-4">👤</div>
                     <h3 class="pixel-font text-lg text-green-400 mb-3">腐竹</h3>
                     <p class="text-white text-xl mb-2">orange_zhao</p>
                     <p class="text-gray-400 text-sm">服务器运营 & 技术维护</p>
                 </div>
                 
-                <div class="mc-border bg-zinc-800 p-8">
-                    <div class="text-4xl mb-4">📧</div>
+                <div class="mc-border bg-zinc-800 p-8 card-hover scroll-reveal" style="transition-delay: 0.15s">
+                    <div class="text-5xl mb-4">📧</div>
                     <h3 class="pixel-font text-lg text-green-400 mb-3">联系邮箱</h3>
                     <p class="text-white text-lg mb-2">3621786236@qq.com</p>
-                    <p class="text-gray-400 text-sm">商务合作 & 问题反馈</p>
+                    <p class="text-gray-400 text-sm">商务合作 & 问题反馈 & 举报申诉</p>
                 </div>
+            </div>
+            
+            <div class="mt-12 mc-border bg-zinc-900 p-6 inline-block scroll-reveal">
+                <p class="text-gray-400 mb-3">服务器地址</p>
+                <p class="pixel-font text-2xl text-green-400 glow-text">4r4u.mkmc.cc</p>
+                <button onclick="copyIP()" class="mc-btn mc-btn-green px-8 py-3 pixel-font text-xs text-white mt-4">
+                    点击复制
+                </button>
             </div>
         </div>
     </section>
 
     <!-- 页脚 -->
-    <footer class="bg-black py-8 border-t-4 border-zinc-800">
+    <footer class="bg-black py-10 border-t-4 border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 text-center">
-            <p class="pixel-font text-green-500 text-lg mb-2">4r4u 无规则服务器</p>
-            <p class="text-gray-500 text-sm mb-4">IP: 4r4u.mkmc.cc</p>
-            <p class="text-gray-600 text-xs">
-                © 2025 4r4u Server. All rights reserved.
-            </p>
+            <p class="pixel-font text-green-500 text-lg mb-3 glow-text">4r4u 无规则服务器</p>
+            <p class="text-gray-500 text-sm mb-2">IP: 4r4u.mkmc.cc</p>
+            <p class="text-gray-600 text-xs mb-4">腐竹：orange_zhao | 邮箱：3621786236@qq.com</p>
+            <div class="border-t border-zinc-800 pt-4 mt-4">
+                <p class="text-gray-600 text-xs">
+                    © 2025 4r4u Minecraft Server. All rights reserved.
+                </p>
+                <p class="text-gray-700 text-xs mt-2">
+                    本站与Mojang Studios无关 | Minecraft是Mojang Studios的商标
+                </p>
+            </div>
         </div>
     </footer>
 
+    <!-- 底部悬浮栏 -->
+    <div id="bottom-bar" class="bottom-bar fixed bottom-0 left-0 w-full bg-zinc-900/95 backdrop-blur border-t-4 border-black z-40 py-3 px-6">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div>
+                <p class="text-gray-400 text-xs">服务器IP</p>
+                <p class="pixel-font text-green-400">4r4u.mkmc.cc</p>
+            </div>
+            <button onclick="copyIP()" class="mc-btn mc-btn-green px-6 py-2 pixel-font text-xs text-white">
+                一键复制
+            </button>
+        </div>
+    </div>
+
+    <!-- 返回顶部 -->
+    <button id="back-top" onclick="scrollToTop()" class="back-top fixed right-6 bottom-24 z-50 mc-btn w-12 h-12 flex items-center justify-center text-xl">
+        ▲
+    </button>
+
     <script>
+        // ========== 基础功能 ==========
+        
         // 复制IP功能
         function copyIP() {
-            const ip = document.getElementById('server-ip').innerText.trim();
+            const ip = '4r4u.mkmc.cc';
             navigator.clipboard.writeText(ip).then(() => {
                 const tip = document.getElementById('copy-tip');
-                tip.style.opacity = '1';
-                setTimeout(() => {
-                    tip.style.opacity = '0';
-                }, 2000);
-            });
-        }
-
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                if (tip) {
+                    tip.style.opacity = '1';
+                    setTimeout(() => {
+                        tip.style.opacity = '0';
+                    }, 2000);
                 }
             });
-        });
-
-        // 导航栏滚动效果
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('shadow-lg');
-            } else {
-                nav.classList.remove('shadow-lg');
+        }
+        
+        // 关闭公告
+        function closeAnnouncement() {
+            const announcement = document.getElementById('announcement');
+            announcement.style.height = announcement.offsetHeight + 'px';
+            setTimeout(() => {
+                announcement.style.height = '0';
+                announcement.style.overflow = 'hidden';
+                announcement.style.transition = 'height 0.3s ease';
+            }, 10);
+            setTimeout(() => {
+                announcement.remove();
+                document.getElementById('navbar').style.top = '0';
+            }, 350);
+        }
+        
+        // 返回顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // ========== FAQ折叠 ==========
+        
+        function toggleFaq(btn) {
+            const item = btn.parentElement;
+            const wasActive = item.classList.contains('active');
+            
+            // 关闭所有
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('active');
+            });
+            
+            // 打开当前
+            if (!wasActive) {
+                item.classList.add('active');
             }
+        }
+        
+        // ========== 排行榜切换 ==========
+        
+        function switchRank(index) {
+            // 更新tab状态
+            document.querySelectorAll('.rank-tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            
+            // 更新面板
+            document.querySelectorAll('.rank-panel').forEach((panel, i) => {
+                panel.classList.toggle('hidden', i !== index);
+            });
+        }
+        
+        // ========== 粒子背景 ==========
+        
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // 随机大小、位置、速度
+                const size = Math.random() * 6 + 4;
+                const left = Math.random() * 100;
+                const duration = Math.random() * 20 + 15;
+                const delay = Math.random() * 20;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = left + '%';
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = -delay + 's';
+                
+                // 随机颜色
+                const colors = ['#5c9e3b', '#7bc055', '#3d6b25', '#8b5a2b'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // ========== 数字计数动画 ==========
+        
+        function animateCount(el) {
+            const target = parseInt(el.dataset.target);
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // 缓动效果
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (target - start) * easeOut);
+                
+                el.textContent = current;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = target;
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // ========== 滚动监听 ==========
+        
+        function initScrollReveal() {
+            const elements = document.querySelectorAll('.scroll-reveal');
+            const countElements = document.querySelectorAll('.count-number');
+            let counted = false;
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        
+                        // 数字计数动画触发
+                        if (!counted && entry.target.closest('#home')) {
+                            countElements.forEach(el => animateCount(el));
+                            counted = true;
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            elements.forEach(el => observer.observe(el));
+        }
+        
+        // 导航栏与返回顶部滚动效果
+        function initScrollEffects() {
+            const navbar = document.getElementById('navbar');
+            const backTop = document.getElementById('back-top');
+            const bottomBar = document.getElementById('bottom-bar');
+            const announcement = document.getElementById('announcement');
+            
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                
+                // 导航栏阴影
+                if (scrollY > 80) {
+                    navbar.classList.add('shadow-xl');
+                } else {
+                    navbar.classList.remove('shadow-xl');
+                }
+                
+                // 返回顶部按钮
+                if (scrollY > 500) {
+                    backTop.classList.add('show');
+                } else {
+                    backTop.classList.remove('show');
+                }
+                
+                // 底部悬浮栏
+                if (scrollY > 800) {
+                    bottomBar.classList.add('show');
+                } else {
+                    bottomBar.classList.remove('show');
+                }
+            });
+        }
+        
+        // ========== 打字机效果 ==========
+        
+        function initTypingEffect() {
+            const titles = [
+                '无规则自由生存服务器',
+                '真正的MC原始体验',
+                '弱肉强食 适者生存',
+                '一切由你决定'
+            ];
+            
+            let titleIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typingEl = document.getElementById('typing-title');
+            
+            function type() {
+                const currentTitle = titles[titleIndex];
+                
+                if (isDeleting) {
+                    typingEl.textContent = currentTitle.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typingEl.textContent = currentTitle.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+                
+                let typeSpeed = isDeleting ? 50 : 120;
+                
+                if (!isDeleting && charIndex === currentTitle.length) {
+                    typeSpeed = 2000;
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    titleIndex = (titleIndex + 1) % titles.length;
+                    typeSpeed = 500;
+                }
+                
+                setTimeout(type, typeSpeed);
+            }
+            
+            // 延迟启动
+            setTimeout(type, 1500);
+        }
+        
+        // ========== 模拟在线人数波动 ==========
+        
+        function simulateOnline() {
+            const onlineEl = document.querySelector('.count-number');
+            if (!onlineEl) return;
+            
+            setInterval(() => {
+                const current = parseInt(onlineEl.textContent);
+                const change = Math.floor(Math.random() * 5) - 2; // -2 到 +2
+                const newValue = Math.max(35, Math.min(65, current + change));
+                onlineEl.textContent = newValue;
+            }, 5000);
+        }
+        
+        // ========== 平滑滚动 ==========
+        
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const offsetTop = target.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+        
+        // ========== 初始化 ==========
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            initScrollReveal();
+            initScrollEffects();
+            initTypingEffect();
+            initSmoothScroll();
+            simulateOnline();
         });
     </script>
 </body>
